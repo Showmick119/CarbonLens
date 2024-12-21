@@ -28,6 +28,8 @@ relevant_columns = [
 specific_manufacturers_filtered = specific_manufacturers_data[relevant_columns].copy()
 
 print(specific_manufacturers_filtered.head())
+print(specific_manufacturers_filtered['Real-World CO2 (g/mi)'].describe())
+
 
 if specific_manufacturers_filtered.empty:
     print("No data available for plotting.")
