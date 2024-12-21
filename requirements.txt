@@ -2,3 +2,9 @@ pandas
 numpy
 matplotlib.pyplot
 seaborn
+
+'''Progress:
+Currently we are encoding and standardizing the powertrain column. We will do the same for a few other columns and then feed this standardized data into a Linear
+Regression model to give sustainability scores to each company. And to also predict future sustainability. And then we will web scrape into the companies manufacturing
+processes. And use AI models to give them suggestions on how to improve. We will also use the csv file data to give these recommendations. Additionally, we will 
+implement an AI tool for consumers, where they can upload descriptions or images of cars and we will use web scraping and AI to analyze the sustainability of the car.'''
