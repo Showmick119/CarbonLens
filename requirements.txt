@@ -2,6 +2,8 @@ pandas
 numpy
 matplotlib.pyplot
 seaborn
+prophet
+sklearn
 
 '''Progress:
 Currently we are encoding and standardizing the powertrain column. We will do the same for a few other columns and then feed this standardized data into a Linear
