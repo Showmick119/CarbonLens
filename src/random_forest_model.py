@@ -1,12 +1,11 @@
 import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
-import numpy as np
-from statsmodels.stats.outliers_influence import variance_inflation_factor
+from sklearn.metrics import make_scorer, mean_squared_error
+from sklearn.model_selection import cross_val_score
 from data_processing import specific_manufacturers_filtered
-import pymysql
+import numpy as np
 
 # Step 1: Normalize Relevant Numerical Columns
 columns_to_normalize = ['Real-World CO2 (g/mi)', 'Ton-MPG (Real-World)']
@@ -64,97 +63,69 @@ specific_manufacturers_filtered['Sustainability Score'] = (
     specific_manufacturers_filtered['Powertrain Contribution'] * 0.3  # Higher weight for powertrain
 )
 
-# Define the features (X) and target (y)
-y = specific_manufacturers_filtered['Sustainability Score']
-features = powertrain_columns + ['Ton-MPG (Real-World)'] + ['Inverted CO2']
+# Combine features and target
+features = powertrain_columns + ['Ton-MPG (Real-World)', 'Inverted CO2']
 X = specific_manufacturers_filtered[features]
+y = specific_manufacturers_filtered['Sustainability Score']
 
-# Train a Linear Regression model
-model = LinearRegression()
-model.fit(X, y)
+# Split data into training and testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Predict sustainability scores
-specific_manufacturers_filtered['Predicted Sustainability Score'] = model.predict(X)
+# Step 2: Train Random Forest Model
+random_forest = RandomForestRegressor(n_estimators=100, random_state=42)
+random_forest.fit(X_train, y_train)
 
-# Checking the sustainability scores
-print(specific_manufacturers_filtered[['Manufacturer', 'Predicted Sustainability Score']].head())
+# Step 3: Evaluate the Model
+y_pred_test = random_forest.predict(X_test)
+mse_test = mean_squared_error(y_test, y_pred_test)
+print(f"Random Forest Test MSE: {mse_test}")
 
-# Testing whether the linear regression model effectively replicates the manual formula
-mse = mean_squared_error(y, specific_manufacturers_filtered['Predicted Sustainability Score'])
-print(f"Mean Squared Error: {mse}")
+# Step 5: Predict Sustainability Scores for All Data
+specific_manufacturers_filtered['Predicted Sustainability Score'] = random_forest.predict(X)
 
-# Normalize predicted scores to [0, 100] with 100 being most sustainable and 0 being least sustainable
+# Normalize scores to [0, 100]
 specific_manufacturers_filtered['Sustainability Score (Normalized)'] = (
-    100 * (specific_manufacturers_filtered['Predicted Sustainability Score'] -
-           specific_manufacturers_filtered['Predicted Sustainability Score'].min()) /
-           (specific_manufacturers_filtered['Predicted Sustainability Score'].max() -
+    100 * (specific_manufacturers_filtered['Predicted Sustainability Score'] - 
+           specific_manufacturers_filtered['Predicted Sustainability Score'].min()) / 
+           (specific_manufacturers_filtered['Predicted Sustainability Score'].max() - 
             specific_manufacturers_filtered['Predicted Sustainability Score'].min())
 )
 
-# Check the normalized sustainability scores for the Manufacturers
-print(specific_manufacturers_filtered[['Manufacturer', 'Sustainability Score (Normalized)']].head())
-
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Train the model on training data
-model.fit(X_train, y_train)
-
-# Evaluate on testing data
-y_pred_test = model.predict(X_test)
-mse_test = mean_squared_error(y_test, y_pred_test)
-print(f"Test MSE: {mse_test}")
-
-feature_importance = pd.DataFrame({'Feature': features, 'Weight': model.coef_})
-print(feature_importance)
-
-vif_data = pd.DataFrame()
-vif_data["Feature"] = features
-vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-print(vif_data)
-
-# Group by Manufacturer and calculate the mean sustainability score across the years of 2008-2024
+# Step 6: Save Aggregated Results
 aggregated_scores = specific_manufacturers_filtered.groupby('Manufacturer', as_index=False).agg(
     {'Sustainability Score (Normalized)': 'mean'}
 )
-
-# Rename the aggregated column for clarity
 aggregated_scores.rename(columns={'Sustainability Score (Normalized)': 'Aggregated Sustainability Score'}, inplace=True)
-
-# Check the grouped results
 print(aggregated_scores)
 
-# Save the results from the Linear Regression Model to a CSV File
-aggregated_scores.to_csv("Linear_Regression_Model_Results.csv")
+# Define a custom scorer for MSE
+mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
 
+# Perform k-fold cross-validation
+k = 5  # Number of folds
+cv_scores = cross_val_score(random_forest, X, y, cv=k, scoring=mse_scorer)
 
-# Connect to MySQL and store the data in the database server created. The database tables are managed by MYSQL and can be accessed via SQL Queries
-conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    password='Amishowmickdas22@',
-    database='sustainability_scores_db'
-)
-cursor = conn.cursor()
+# Convert negative MSE to positive
+cv_scores = -cv_scores
 
-create_table_query = '''
-CREATE TABLE IF NOT EXISTS manufacturer_scores (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    manufacturer_name VARCHAR(255),
-    sustainability_score FLOAT
-);
-'''
-cursor.execute(create_table_query)
-conn.commit()
-print("Table created successfully!")
+print(f"Cross-Validation MSE scores for each fold: {cv_scores}")
+print(f"Average Cross-Validation MSE: {np.mean(cv_scores)}")
 
-for _, row in aggregated_scores.iterrows():
-    cursor.execute(
-        'INSERT INTO manufacturer_scores (manufacturer_name, sustainability_score) VALUES (%s, %s)',
-        (row['Manufacturer'], row['Aggregated Sustainability Score'])
-    )
-conn.commit()
-print("Data saved to MySQL successfully!")
+# Get feature importances from the Random Forest model
+feature_importances = random_forest.feature_importances_
 
-cursor.close()
-conn.close()
+# Create a DataFrame to visualize the feature importance
+features_df = pd.DataFrame({
+    'Feature': features,  # Replace with the feature names used in your model
+    'Importance': feature_importances
+})
+
+# Sort features by importance
+features_df = features_df.sort_values(by='Importance', ascending=False)
+
+# Display the feature importance
+print(features_df)
+
+# # Save results to a CSV file
+aggregated_scores.to_csv("Random_Forest_Model_Results.csv", index=False)
+print("Random Forest Model results saved to Random_Forest_Model_Results.csv!")
