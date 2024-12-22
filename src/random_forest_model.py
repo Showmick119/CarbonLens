@@ -56,7 +56,7 @@ powertrain_weights = {
 for col, weight in powertrain_weights.items():
     specific_manufacturers_filtered['Powertrain Contribution'] = sum(specific_manufacturers_filtered[col] * weight)
 
-# Manually combine into Sustainability Score, a baseline with which we can compare the value predicted by the Linear Regression Model
+# Manually combine into Sustainability Score, a baseline with which we can compare the value predicted by the Random Forest Model
 specific_manufacturers_filtered['Sustainability Score'] = (
     specific_manufacturers_filtered['Inverted CO2'] * 0.4 +  # Adjusted weight
     specific_manufacturers_filtered['Ton-MPG (Real-World)'] * 0.3 +
