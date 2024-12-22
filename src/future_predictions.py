@@ -1,70 +1,54 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import MinMaxScaler
-from data_processing import specific_manufacturers_filtered  # Assuming preprocessing is here
-from sklearn.model_selection import train_test_split
-import numpy as np
+from random_forest_model import aggregated_scores
+from prophet import Prophet
+import matplotlib.pyplot as plt
+import os
 
-# Define the features (X) and target (y)
-features = [
-    'Powertrain - Diesel',
-    'Powertrain - Battery Electric Vehicle (BEV)',
-    'Powertrain - Plug-in Hybrid Electric Vehicle (PHEV)',
-    'Powertrain - Fuel Cell Electric Vehicle (FCEV)',
-    'Powertrain - Other (incl. CNG)',
-    'Powertrain - Gasoline Mild Hybrid/MHEV',
-    'Powertrain - Gasoline Strong Hybrid/HEV',
-    'Powertrain - Gasoline with Start/Stop',
-    'Powertrain - Gasoline without Start/Stop',
-    'Inverted CO2',
-    'Ton-MPG (Real-World)'
-]
+# Sorting the aggregated scores by the specific Manufacturer
+manufacturers = aggregated_scores['Manufacturer'].unique()
 
-X = specific_manufacturers_filtered[features]
-y = specific_manufacturers_filtered['Aggregated Sustainability Score']
-
-# Train-test split (for evaluation, if needed)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Load the Random Forest model trained earlier (if serialized, load it here)
-model = RandomForestRegressor(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
-
-# Define percentage improvements for each feature
-projection_changes = {
-    'Inverted CO2': 0.1,  # 10% improvement
-    'Ton-MPG (Real-World)': 0.05,  # 5% improvement
-    'Powertrain - Diesel': 0.0,  # Assume no change
-    'Powertrain - Battery Electric Vehicle (BEV)': 0.1,  # 10% improvement
-    'Powertrain - Plug-in Hybrid Electric Vehicle (PHEV)': 0.08,
-    'Powertrain - Fuel Cell Electric Vehicle (FCEV)': 0.1,
-    'Powertrain - Other (incl. CNG)': -0.05,  # Assume slight decrease
-    'Powertrain - Gasoline Mild Hybrid/MHEV': 0.05,
-    'Powertrain - Gasoline Strong Hybrid/HEV': 0.05,
-    'Powertrain - Gasoline with Start/Stop': 0.02,
-    'Powertrain - Gasoline without Start/Stop': -0.05
+# Creating individual DataFrames for the individual Manufacturer data
+manufacturer_data = {
+    manufacturer: aggregated_scores[aggregated_scores['Manufacturer'] == manufacturer].reset_index(drop=True)
+    for manufacturer in manufacturers
 }
 
-# Create future features
-future_features = X.copy()  # Start with the current features
+# Making the directory where the plots will be saved
+plots_dir = "manufacturer_forecast_plots"
+os.makedirs(plots_dir, exist_ok=True)
 
-for feature, change in projection_changes.items():
-    if feature in future_features:
-        # Apply percentage change
-        future_features[feature] = future_features[feature] * (1 + change)
+forecasts = {}
 
-# Predict future sustainability scores
-future_predictions = model.predict(future_features)
+for manufacturer, data in manufacturer_data.items():
+    # Prepare data for the Prophet time-series model
+    data = data[['Model Year', 'Yearly Sustainability Score']]
+    data = data.rename(columns={'Model Year': 'ds', 'Yearly Sustainability Score': 'y'})
+    data['ds'] = pd.to_datetime(data['ds'], format='%Y')
 
-# Combine results into a DataFrame for easier interpretation
-future_results = pd.DataFrame({
-    'Manufacturer': specific_manufacturers_filtered['Manufacturer'],  # Assuming this column exists
-    'Future Sustainability Score': future_predictions
-})
+    # Initializing and fitting the Prophet model for time-series analysis
+    model = Prophet()
+    model.fit(data)
 
-# Group by Manufacturer to calculate average future sustainability score
-aggregated_future_results = future_results.groupby('Manufacturer', as_index=False).mean()
+    # Creating DataFrame for future years
+    future = model.make_future_dataframe(periods=10, freq='Y')
+    
+    # Predicting future sustainability scores based on the historical trends
+    forecast = model.predict(future)
 
-# Display the results
-print("Projected Future Sustainability Scores:")
-print(aggregated_future_results)
+    # Save forecast results
+    forecasts[manufacturer] = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
+
+    # Generating the plot
+    fig = model.plot(forecast)
+
+    # Adding x and y-axis labels
+    ax = fig.gca()
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Sustainability Score")
+
+    # Saving the plot as a file
+    fig.savefig(f"{plots_dir}/{manufacturer}_forecast_plot.png")
+    plt.close(fig)
+
+    # Message to indicate successful execution of the code
+    print(f"Saved plot for {manufacturer} to {plots_dir}/{manufacturer}_forecast_plot.png")

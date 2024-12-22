@@ -7,7 +7,7 @@ from sklearn.model_selection import cross_val_score
 from data_processing import specific_manufacturers_filtered
 import numpy as np
 
-# Step 1: Normalize Relevant Numerical Columns
+# Normalize Relevant Numerical Columns
 columns_to_normalize = ['Real-World CO2 (g/mi)', 'Ton-MPG (Real-World)']
 specific_manufacturers_filtered[columns_to_normalize] = specific_manufacturers_filtered[columns_to_normalize].replace('-', None).astype(float)
 specific_manufacturers_filtered[columns_to_normalize] = specific_manufacturers_filtered[columns_to_normalize].fillna(specific_manufacturers_filtered[columns_to_normalize].mean())
@@ -56,7 +56,7 @@ powertrain_weights = {
 for col, weight in powertrain_weights.items():
     specific_manufacturers_filtered['Powertrain Contribution'] = sum(specific_manufacturers_filtered[col] * weight)
 
-# Manually combine into Sustainability Score, a baseline with which we can compare the value predicted by the Random Forest Model
+# Manually combine into Sustainability Score, a benchmark with which we can train the Random Forest Model and evaluate the values it predicts
 specific_manufacturers_filtered['Sustainability Score'] = (
     specific_manufacturers_filtered['Inverted CO2'] * 0.4 +  # Adjusted weight
     specific_manufacturers_filtered['Ton-MPG (Real-World)'] * 0.3 +
@@ -71,16 +71,16 @@ y = specific_manufacturers_filtered['Sustainability Score']
 # Split data into training and testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Step 2: Train Random Forest Model
+# Train Random Forest Model
 random_forest = RandomForestRegressor(n_estimators=100, random_state=42)
 random_forest.fit(X_train, y_train)
 
-# Step 3: Evaluate the Model
+# Evaluate the Model
 y_pred_test = random_forest.predict(X_test)
 mse_test = mean_squared_error(y_test, y_pred_test)
 print(f"Random Forest Test MSE: {mse_test}")
 
-# Step 5: Predict Sustainability Scores for All Data
+# Predict Sustainability Scores for All Data
 specific_manufacturers_filtered['Predicted Sustainability Score'] = random_forest.predict(X)
 
 # Normalize scores to [0, 100]
@@ -91,41 +91,45 @@ specific_manufacturers_filtered['Sustainability Score (Normalized)'] = (
             specific_manufacturers_filtered['Predicted Sustainability Score'].min())
 )
 
-# Step 6: Save Aggregated Results
-aggregated_scores = specific_manufacturers_filtered.groupby('Manufacturer', as_index=False).agg(
-    {'Sustainability Score (Normalized)': 'mean'}
-)
-aggregated_scores.rename(columns={'Sustainability Score (Normalized)': 'Aggregated Sustainability Score'}, inplace=True)
-print(aggregated_scores)
+print(specific_manufacturers_filtered.head())
 
-# Define a custom scorer for MSE
-mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
+# Group by Manufacturer and Model Year to retain scores for each year
+aggregated_scores = specific_manufacturers_filtered.groupby(
+    ['Manufacturer', 'Model Year'], as_index=False
+).agg({'Sustainability Score (Normalized)': 'mean'})
 
-# Perform k-fold cross-validation
-k = 5  # Number of folds
-cv_scores = cross_val_score(random_forest, X, y, cv=k, scoring=mse_scorer)
+# Rename the column to make it more descriptive
+aggregated_scores.rename(columns={'Sustainability Score (Normalized)': 'Yearly Sustainability Score'}, inplace=True)
 
-# Convert negative MSE to positive
-cv_scores = -cv_scores
+'''Testing the Model's Accuracy as well as measuring how each feature/metric contributes to the Sustainability Score for that Manufacturer in that given year'''
+# # Define a custom scorer for MSE
+# mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
 
-print(f"Cross-Validation MSE scores for each fold: {cv_scores}")
-print(f"Average Cross-Validation MSE: {np.mean(cv_scores)}")
+# # Perform k-fold cross-validation
+# k = 5  # Number of folds
+# cv_scores = cross_val_score(random_forest, X, y, cv=k, scoring=mse_scorer)
 
-# Get feature importances from the Random Forest model
-feature_importances = random_forest.feature_importances_
+# # Convert negative MSE to positive
+# cv_scores = -cv_scores
 
-# Create a DataFrame to visualize the feature importance
-features_df = pd.DataFrame({
-    'Feature': features,  # Replace with the feature names used in your model
-    'Importance': feature_importances
-})
+# print(f"Cross-Validation MSE scores for each fold: {cv_scores}")
+# print(f"Average Cross-Validation MSE: {np.mean(cv_scores)}")
 
-# Sort features by importance
-features_df = features_df.sort_values(by='Importance', ascending=False)
+# # Get feature importances from the Random Forest model
+# feature_importances = random_forest.feature_importances_
 
-# Display the feature importance
-print(features_df)
+# # Create a DataFrame to visualize the feature importance
+# features_df = pd.DataFrame({
+#     'Feature': features,  # Replace with the feature names used in your model
+#     'Importance': feature_importances
+# })
 
-# # Save results to a CSV file
-aggregated_scores.to_csv("Random_Forest_Model_Results.csv", index=False)
-print("Random Forest Model results saved to Random_Forest_Model_Results.csv!")
+# # Sort features by importance
+# features_df = features_df.sort_values(by='Importance', ascending=False)
+
+# # Display the feature importance
+# print(features_df)
+
+# # # Save results to a CSV file
+# aggregated_scores.to_csv("Random_Forest_Model_Results.csv", index=False)
+# print("Random Forest Model results saved to Random_Forest_Model_Results.csv!")
