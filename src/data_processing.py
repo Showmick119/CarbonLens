@@ -6,12 +6,14 @@ emissions_data['Model Year'] = emissions_data['Model Year'].replace('Prelim. 202
 emissions_data['Model Year'] = pd.to_numeric(emissions_data['Model Year'])
 data_2008 = emissions_data[emissions_data['Model Year'] >= 2008]
 print(data_2008.head())
+tesla_debug = data_2008[data_2008['Manufacturer'] == 'Tesla']
+print("Tesla data after year filter:", tesla_debug)
 
 # # Separating the data for all the manufacturers combined, and the separate unique manufacturers
 specific_manufacturers_data = data_2008[data_2008['Manufacturer'] != 'All']
 print(specific_manufacturers_data.head())
-
-
+tesla_debug = specific_manufacturers_data[specific_manufacturers_data['Manufacturer'] == 'Tesla']
+print("Tesla data after manufacturer filter:", tesla_debug)
 
 # Filtering the relevant columns for our analysis
 relevant_columns = [
