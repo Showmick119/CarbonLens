@@ -102,8 +102,8 @@ aggregated_scores = specific_manufacturers_filtered.groupby(
 aggregated_scores.rename(columns={'Sustainability Score (Normalized)': 'Yearly Sustainability Score'}, inplace=True)
 
 # Save results to a CSV file
-aggregated_scores.to_csv("Random_Forest_Model_Results.csv", index=False)
-print("Random Forest Model results saved to Random_Forest_Model_Results.csv")
+aggregated_scores.to_csv("random_forest_model_results.csv", index=False)
+print("Random Forest Model results saved to random_forest_model_results.csv")
 
 
 
