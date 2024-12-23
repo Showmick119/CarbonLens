@@ -1,11 +1,11 @@
 import pandas as pd
+import numpy as np
+from data_processing import specific_manufacturers_filtered
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.model_selection import cross_val_score
-from data_processing import specific_manufacturers_filtered
-import numpy as np
 
 # Normalize Relevant Numerical Columns
 columns_to_normalize = ['Real-World CO2 (g/mi)', 'Ton-MPG (Real-World)']
@@ -101,35 +101,37 @@ aggregated_scores = specific_manufacturers_filtered.groupby(
 # Rename the column to make it more descriptive
 aggregated_scores.rename(columns={'Sustainability Score (Normalized)': 'Yearly Sustainability Score'}, inplace=True)
 
-'''Testing the Model's Accuracy as well as measuring how each feature/metric contributes to the Sustainability Score for that Manufacturer in that given year'''
-# # Define a custom scorer for MSE
-# mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
+# Save results to a CSV file
+aggregated_scores.to_csv("Random_Forest_Model_Results.csv", index=False)
+print("Random Forest Model results saved to Random_Forest_Model_Results.csv")
 
-# # Perform k-fold cross-validation
-# k = 5  # Number of folds
-# cv_scores = cross_val_score(random_forest, X, y, cv=k, scoring=mse_scorer)
 
-# # Convert negative MSE to positive
-# cv_scores = -cv_scores
 
-# print(f"Cross-Validation MSE scores for each fold: {cv_scores}")
-# print(f"Average Cross-Validation MSE: {np.mean(cv_scores)}")
+'''Testing the Model's Accuracy as well as measuring how each feature/metric contributes to the Sustainability Score for the Manufacturer in that given year'''
+# Define a custom scorer for MSE
+mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
 
-# # Get feature importances from the Random Forest model
-# feature_importances = random_forest.feature_importances_
+# Perform k-fold cross-validation
+k = 5  # Number of folds
+cv_scores = cross_val_score(random_forest, X, y, cv=k, scoring=mse_scorer)
 
-# # Create a DataFrame to visualize the feature importance
-# features_df = pd.DataFrame({
-#     'Feature': features,  # Replace with the feature names used in your model
-#     'Importance': feature_importances
-# })
+# Convert negative MSE to positive
+cv_scores = -cv_scores
 
-# # Sort features by importance
-# features_df = features_df.sort_values(by='Importance', ascending=False)
+print(f"Cross-Validation MSE scores for each fold: {cv_scores}")
+print(f"Average Cross-Validation MSE: {np.mean(cv_scores)}")
 
-# # Display the feature importance
-# print(features_df)
+# Get feature importances from the Random Forest model
+feature_importances = random_forest.feature_importances_
 
-# # # Save results to a CSV file
-# aggregated_scores.to_csv("Random_Forest_Model_Results.csv", index=False)
-# print("Random Forest Model results saved to Random_Forest_Model_Results.csv!")
+# Create a DataFrame to visualize the feature importance
+features_df = pd.DataFrame({
+    'Feature': features,  # Replace with the feature names used in your model
+    'Importance': feature_importances
+})
+
+# Sort features by importance
+features_df = features_df.sort_values(by='Importance', ascending=False)
+
+# Display the feature importance
+print(features_df)
