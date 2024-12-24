@@ -30,5 +30,4 @@ specific_manufacturers_filtered = specific_manufacturers_data[relevant_columns].
 if specific_manufacturers_filtered.empty:
     print("No data available for plotting.")
 else:
-    print(specific_manufacturers_filtered.head())
     print("Successfully filtered the data.")
