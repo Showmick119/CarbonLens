@@ -21,6 +21,12 @@ specific_manufacturers_filtered = specific_manufacturers_filtered[
     (specific_manufacturers_filtered['Real-World MPG'] > 0)
 ]
 
+# Renaming GM and VW to their full form names
+specific_manufacturers_filtered['Manufacturer'] = specific_manufacturers_filtered['Manufacturer'].replace({
+    'GM': 'General Motors',
+    'VW': 'Volkswagen'
+})
+
 # Directory to save the plots
 plots_dir = "manufacturer_co2_mpg_plots"
 os.makedirs(plots_dir, exist_ok=True)
@@ -86,6 +92,3 @@ for manufacturer in specific_manufacturers_filtered['Manufacturer'].unique():
     plt.close(fig)
 
     print(f"Enhanced dark-mode plots for {manufacturer} saved successfully!")
-
-
-# Other visualizations and metrics for the homepage, where we discuss the importance of environmental impact and describe our exploration and how we are defining it

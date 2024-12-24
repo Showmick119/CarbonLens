@@ -99,6 +99,12 @@ aggregated_scores = specific_manufacturers_filtered.groupby(
 # Rename the column to make it more descriptive
 aggregated_scores.rename(columns={'Sustainability Score (Normalized)': 'Yearly Sustainability Score'}, inplace=True)
 
+# Renaming VW and GM to their full form Manufacturer Names
+aggregated_scores['Manufacturer'] = aggregated_scores['Manufacturer'].replace({
+    'GM': 'General Motors',
+    'VW': 'Volkswagen'
+})
+
 # # Save results to a CSV file
 # aggregated_scores.to_csv("random_forest_model_results.csv", index=False)
 # print("Random Forest Model results saved to random_forest_model_results.csv")

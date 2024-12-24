@@ -1,8 +1,9 @@
 import streamlit as st
 import os
 import sys
+# from ai_sentiment_analysis import main as sentiment_analysis
 
-# Add src folder to system path
+# Add src folder to system path, as it's in a different folder from this file
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
 # Import aggregated_scores from random_forest_model.py
@@ -162,5 +163,6 @@ sustainability_score = aggregated_scores[
 ]["Yearly Sustainability Score"].values[0]
 
 st.subheader("AI Sentiment Analysis")
-st.write("This company follows these specific metrics and processes for their manufacturing and hence they get the following score for their sustainability and environmental impact")
-st.write(f"Final Sustainability Score: {sustainability_score:.2f}")
+# final_score, positive_count, negative_count = sentiment_analysis(selected_manufacturer, sustainability_score)
+# st.write(f"Adjusted Sustainability Score: {final_score:.2f}")
+# st.write(f"Positive Mentions: {positive_count}, Negative Mentions: {negative_count}")
