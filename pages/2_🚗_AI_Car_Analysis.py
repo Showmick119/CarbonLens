@@ -1,10 +1,9 @@
-# AI Product Analysis
 import streamlit as st
 from PIL import Image
 import random
 
 # Set the page configuration
-st.set_page_config(page_title="AI Product Analysis", layout="centered")
+st.set_page_config(page_title="AI Product Analysis", layout="wide")
 
 # Page Title
 st.title("AI Product Analysis")
