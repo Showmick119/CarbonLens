@@ -2,7 +2,7 @@ import streamlit as st
 from PIL import Image
 
 # Set the page configuration
-st.set_page_config(page_title="Home - Sustainability Analysis", layout="wide")
+st.set_page_config(page_title="Home - Carbon Lens", page_icon="🗂️", layout="wide")
 
 # Page Title
 st.title("Welcome to the Sustainability Analysis Dashboard")

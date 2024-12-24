@@ -1,15 +1,22 @@
 import streamlit as st
 import os
+import sys
+
+# Add src folder to system path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+
+# Import aggregated_scores from random_forest_model.py
+from random_forest_model import aggregated_scores
 
 # Set the page configuration
-st.set_page_config(page_title="Manufacturer Analysis", layout="wide")
+st.set_page_config(page_title="Manufacturer Analysis", page_icon="📊", layout="wide")
 
 # Page Title
 st.title("Manufacturer Analysis")
 st.write("Welcome to the Manufacturer Analysis page. Here you can explore sustainability efforts and metrics for different car manufacturers. Use the dropdown menu to select a manufacturer and view their detailed analysis.")
 
 # Dropdown menu for selecting manufacturers
-manufacturers = ['BMW', 'Ford', 'General Motors', 'Honda', 'Hyundai', 'Kia', 'Mazda', 'Mercedes', 'Nissan', 'Stellantis', 'Subaru', 'Toyota', 'VW']
+manufacturers = ['BMW', 'Ford', 'GM', 'Honda', 'Hyundai', 'Kia', 'Mazda', 'Mercedes', 'Nissan', 'Stellantis', 'Subaru', 'Toyota', 'VW']
 selected_manufacturer = st.selectbox("Select a Manufacturer:", manufacturers)
 
 # Define file paths for respective graphs
@@ -149,6 +156,11 @@ with col2:
     )
 
 # AI Tool for Online Sentiment Analysis which will modify the Current Sustainability Score for this Manufacturer and return the final score
+sustainability_score = aggregated_scores[
+    (aggregated_scores["Manufacturer"] == selected_manufacturer) &
+    (aggregated_scores["Model Year"] == 2024)
+]["Yearly Sustainability Score"].values[0]
+
 st.subheader("AI Sentiment Analysis")
 st.write("This company follows these specific metrics and processes for their manufacturing and hence they get the following score for their sustainability and environmental impact")
-st.write("Final Sustainability Score: 89/100")
+st.write(f"Final Sustainability Score: {sustainability_score:.2f}")

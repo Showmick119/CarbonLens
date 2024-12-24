@@ -3,7 +3,7 @@ from PIL import Image
 import random
 
 # Set the page configuration
-st.set_page_config(page_title="AI Product Analysis", layout="wide")
+st.set_page_config(page_title="AI Product Analysis", page_icon="🚗", layout="wide")
 
 # Page Title
 st.title("AI Product Analysis")
