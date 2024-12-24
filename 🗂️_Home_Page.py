@@ -1,4 +1,3 @@
-# Home Page
 import streamlit as st
 from PIL import Image
 
@@ -40,19 +39,19 @@ st.markdown("Below are some overall insights into manufacturers' sustainability 
 
 # Display Comparative Boxplot
 st.subheader("Comparative Sustainability Score Boxplot")
-boxplot_path = "data/manufacturer_advanced_visuals/comparative_sustainability_boxplot.png"
+boxplot_path = "manufacturer_advanced_visuals/comparative_sustainability_boxplot.png"
 try:
     boxplot_img = Image.open(boxplot_path)
-    st.image(boxplot_img, caption="Comparative Boxplot of Sustainability Scores", use_column_width=True)
+    st.image(boxplot_img, caption="Comparative Boxplot of Sustainability Scores", use_container_width=True)
 except FileNotFoundError:
     st.error(f"Unable to load image at {boxplot_path}")
 
 # Display Top Sustainability Efforts
 st.subheader("Top Sustainability Efforts by Manufacturers")
-top_efforts_path = "data/manufacturer_advanced_visuals/top_sustainability_efforts.png"
+top_efforts_path = "manufacturer_advanced_visuals/top_sustainability_efforts.png"
 try:
     top_efforts_img = Image.open(top_efforts_path)
-    st.image(top_efforts_img, caption="Top Sustainability Efforts by Manufacturers", use_column_width=True)
+    st.image(top_efforts_img, caption="Top Sustainability Efforts by Manufacturers", use_container_width=True)
 except FileNotFoundError:
     st.error(f"Unable to load image at {top_efforts_path}")
 
