@@ -4,6 +4,8 @@ from transformers import pipeline
 import pdfplumber
 import json
 import os
+from datetime import datetime
+from random_forest_model import aggregated_scores
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,13 +19,40 @@ REDDIT_CLIENT_ID = "aSl7D2IUWFvvys1NHnH2RA"
 REDDIT_CLIENT_SECRET = "Zh9LxiMxFwLpQ1-xs4Z_nubWUTxkkA"
 REDDIT_USER_AGENT = "CarbonLensApp/1.0 by Physical_Mix5167"
 
+# Cache versioning
+CACHE_VERSION = "1.0"  # Update this whenever the model or logic changes
+CACHE_TIMESTAMP = "cache_timestamp.json"
+
+# Check if cache is valid
+def is_cache_valid(cache_file):
+    if not os.path.exists(cache_file):
+        return False
+
+    try:
+        with open(CACHE_TIMESTAMP, "r") as f:
+            cache_metadata = json.load(f)
+            return cache_metadata.get("version") == CACHE_VERSION
+    except Exception as e:
+        logger.error(f"Error reading cache metadata: {e}")
+        return False
+
+# Update cache metadata
+def update_cache_metadata():
+    metadata = {
+        "version": CACHE_VERSION,
+        "timestamp": datetime.now().isoformat()
+    }
+    with open(CACHE_TIMESTAMP, "w") as f:
+        json.dump(metadata, f)
+
+
 # Prefetch Reddit posts and cache results
 def prefetch_reddit_posts(manufacturer, limit=50, cache_file="reddit_cache.json"):
     logger.info(f"Prefetching Reddit posts for {manufacturer}...")
     cache = {}
 
-    # Load cache if it exists
-    if os.path.exists(cache_file):
+    # Load cache if valid
+    if is_cache_valid(cache_file):
         with open(cache_file, "r") as f:
             cache = json.load(f)
 
@@ -54,17 +83,19 @@ def prefetch_reddit_posts(manufacturer, limit=50, cache_file="reddit_cache.json"
     cache[manufacturer] = posts
     with open(cache_file, "w") as f:
         json.dump(cache, f)
+    update_cache_metadata()
 
     logger.info(f"Successfully fetched {len(posts)} posts for {manufacturer}.")
     return posts
+
 
 # Prefetch and cache PDF processing
 def prefetch_pdf_text(pdf_path, cache_file="pdf_cache.json"):
     logger.info(f"Prefetching PDF text for {pdf_path}...")
     cache = {}
 
-    # Load cache if it exists
-    if os.path.exists(cache_file):
+    # Load cache if valid
+    if is_cache_valid(cache_file):
         with open(cache_file, "r") as f:
             cache = json.load(f)
 
@@ -91,11 +122,12 @@ def prefetch_pdf_text(pdf_path, cache_file="pdf_cache.json"):
     cache[pdf_path] = text_chunks
     with open(cache_file, "w") as f:
         json.dump(cache, f)
+    update_cache_metadata()
 
     logger.info("PDF text extraction and caching completed.")
     return text_chunks
 
-# Analyze sentiment with caps on impact
+# Analyze sentiment
 def analyze_sentiment(text_chunks):
     logger.info("Analyzing sentiment for text chunks...")
     try:
@@ -104,10 +136,10 @@ def analyze_sentiment(text_chunks):
 
         for result in results:
             if result["label"] == "POSITIVE":
-                weight = min(result["score"] * 3.0, 3.0)  # Cap strong positives (Double impact)
+                weight = min(result["score"] * 3.0, 3.0)  # Cap strong positives
                 sentiment_scores.append(weight)
             elif result["label"] == "NEGATIVE":
-                weight = max(-result["score"] * 2.4, -2.4)  # Cap strong negatives (Double impact)
+                weight = max(-result["score"] * 2.4, -2.4)  # Cap strong negatives
                 sentiment_scores.append(weight)
 
         logger.info("Sentiment analysis completed.")

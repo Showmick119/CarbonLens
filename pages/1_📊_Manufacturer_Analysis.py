@@ -7,6 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"
 
 # Import aggregated_scores from random_forest_model.py
 from random_forest_model import aggregated_scores
+from ai_sentiment_analysis import update_cache_metadata
 
 # Set the page configuration
 st.set_page_config(page_title="Manufacturer Analysis", page_icon="📊", layout="wide")
@@ -160,11 +161,15 @@ sustainability_score = aggregated_scores[
 st.subheader("AI Sentiment Analysis")
 if st.button("Run Sentiment Analysis"):
     pdf_path = f"sustainability_reports/{selected_manufacturer} Sustainability Report.pdf"
+
+    # Invalidate and update cache
+    update_cache_metadata()
+
     if os.path.exists(pdf_path):
         with st.spinner("Running sentiment analysis. Please be patient, this may take a few moments..."):
             from ai_sentiment_analysis import main as sentiment_analysis
             final_score, explanation = sentiment_analysis(selected_manufacturer, sustainability_score, pdf_path=pdf_path)
-            
+
             st.write(f"Adjusted Sustainability Score: {final_score:.2f}")
             st.write("Explanation:")
             st.write(explanation)
