@@ -1,4 +1,6 @@
 import pandas as pd
+
+# Read the file 
 emissions_data = pd.read_csv("data\emissions_data.csv")
 
 # As many manufacturers in the data set don't have valid entries before 2008, to maintain consistency, we will only work with the data from 2008 onwards
@@ -6,7 +8,7 @@ emissions_data['Model Year'] = emissions_data['Model Year'].replace('Prelim. 202
 emissions_data['Model Year'] = pd.to_numeric(emissions_data['Model Year'])
 data_2008 = emissions_data[emissions_data['Model Year'] >= 2008]
 
-# # Separating the data for all the manufacturers combined, and the separate unique manufacturers
+# Separating the data for all the manufacturers combined, and the separate unique manufacturers
 specific_manufacturers_data = data_2008[data_2008['Manufacturer'] != 'All']
 
 # Filtering the relevant columns for our analysis

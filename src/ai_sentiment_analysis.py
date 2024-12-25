@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize sentiment analysis model
-sentiment_model = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english", device=0)  # Use GPU if available
+sentiment_model = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english", device=0)
 
 # Reddit API configuration
 REDDIT_CLIENT_ID = "aSl7D2IUWFvvys1NHnH2RA"
@@ -82,7 +82,7 @@ def prefetch_pdf_text(pdf_path, cache_file="pdf_cache.json"):
                 if text:
                     paragraphs = text.split("\n")
                     for paragraph in paragraphs:
-                        if any(keyword in paragraph.lower() for keyword in ["sustainability", "carbon", "emissions", "initiatives", "impact", "decarbonisation"]):
+                        if any(keyword in paragraph.lower() for keyword in ["sustainability", "carbon", "emissions", "initiatives", "impact", "decarbonisation", "ev"]):
                             text_chunks.append(paragraph)
     except Exception as e:
         logger.error(f"Error extracting text from PDF: {e}")
@@ -104,10 +104,10 @@ def analyze_sentiment(text_chunks):
 
         for result in results:
             if result["label"] == "POSITIVE":
-                weight = min(result["score"] * 1.5, 1.5)  # Cap strong positives
+                weight = min(result["score"] * 3.0, 3.0)  # Cap strong positives (Double impact)
                 sentiment_scores.append(weight)
             elif result["label"] == "NEGATIVE":
-                weight = max(-result["score"] * 1.2, -1.2)  # Cap strong negatives
+                weight = max(-result["score"] * 2.4, -2.4)  # Cap strong negatives (Double impact)
                 sentiment_scores.append(weight)
 
         logger.info("Sentiment analysis completed.")
@@ -129,16 +129,17 @@ def adjust_sustainability_score(base_score, pdf_sentiment, reddit_sentiment, num
     adjusted_score = base_score + adjustment
     return max(0, min(100, adjusted_score))  # Ensure score stays within bounds
 
-# Generate explanation for score adjustment
+# Generate general explanation for score adjustment of all the manufacturers
 def generate_explanation(manufacturer, base_score, final_score, pdf_sentiment, reddit_sentiment, num_reddit_posts):
-    explanation = (
-        f"The sustainability score for {manufacturer} reflects insights from both the company's sustainability report and public sentiment. "
-        f"The report highlighted notable efforts such as renewable energy initiatives and waste management systems, but also raised some concerns "
-        f"about areas needing improvement. Discussions on Reddit generally indicated mixed public opinion, with mentions of both positive and "
-        f"negative aspects of the manufacturer's environmental practices. Taking these factors into account, the sustainability score has been adjusted "
-        f"from {base_score:.2f} to {final_score:.2f}."
-    )
-    return explanation
+    explanation = f"""
+    The sustainability score for {manufacturer} combines insights from the company's official sustainability report and public sentiment gathered online.
+    The sustainability report highlighted commendable initiatives, such as promoting renewable energy and implementing waste management systems. 
+    However, the report primarily focused on future plans and aspirations, with limited evidence of concrete efforts in the current product series. 
+    As a result, the score could not be adjusted significantly based on the report alone. Meanwhile, discussions on Reddit presented a mixed perspective, with users mentioning both positive steps and ongoing challenges in the manufacturer's 
+    environmental practices. This suggests that public perception remains divided. Considering the report's promises and public sentiment, the sustainability 
+    score has been adjusted from {base_score:.2f} to {final_score:.2f}.
+    """
+    return explanation.strip()
 
 # Main function for analysis
 def main(manufacturer, base_score, pdf_path=None):

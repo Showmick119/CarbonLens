@@ -51,8 +51,9 @@ for manufacturer, data in manufacturer_data.items():
     forecasts[manufacturer] = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
 
     # Plotting
-    fig, ax = plt.subplots(figsize=(10, 6), facecolor='black')
-    ax.set_facecolor('black')
+    fig, ax = plt.subplots(figsize=(12, 5))  # Wider and slightly larger plot
+    fig.patch.set_alpha(0)  # Transparent figure background
+    ax.set_facecolor('none')  # Transparent axes background
 
     # Plot observed and forecasted data
     ax.plot(data['ds'], data['y'], 'o', label='Observed Data', color='white')
@@ -67,30 +68,32 @@ for manufacturer, data in manufacturer_data.items():
     )
 
     # Enhance axis labels and ticks
-    ax.set_xlabel("Year", fontsize=14, weight='bold', color='white')
-    ax.set_ylabel("Sustainability Score", fontsize=14, weight='bold', color='white')
-    ax.tick_params(axis='x', colors='white', labelsize=12)
-    ax.tick_params(axis='y', colors='white', labelsize=12)
+    ax.set_xlabel("Year", fontsize=12, color='white')  # Removed bold styling
+    ax.set_ylabel("Sustainability Score", fontsize=12, color='white')  # Removed bold styling
+    ax.tick_params(axis='x', colors='white', labelsize=10)
+    ax.tick_params(axis='y', colors='white', labelsize=10)
 
     # Add grid lines
     ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
 
-    # Add legend
-    ax.legend(loc='upper left', fontsize=12, facecolor='black', edgecolor='white', labelcolor='white')
+    # Add legend with a smaller label box
+    ax.legend(
+        loc='upper left', fontsize=10, facecolor='black', edgecolor='white', labelspacing=0.4, labelcolor='white'
+    )
 
-    # Add title
-    ax.set_title(f"{manufacturer} Sustainability Score Forecast", fontsize=16, weight='bold', color='white')
+    # Adjust layout to reduce empty space
+    plt.tight_layout()
 
     # Save the plot
-    fig.savefig(f"{plots_dir}/{manufacturer}_forecast_plot.png", dpi=300, facecolor='black')
+    fig.savefig(f"{plots_dir}/{manufacturer}_forecast_plot.png", dpi=300, transparent=True, bbox_inches='tight')  # Minimized space
     plt.close(fig)
 
     print(f"Saved plot for {manufacturer} to {plots_dir}/{manufacturer}_forecast_plot.png")
 
 
-# Cross-validation
-df_cv = cross_validation(model, initial='730 days', period='180 days', horizon='365 days')
+# # Cross-validation
+# df_cv = cross_validation(model, initial='730 days', period='180 days', horizon='365 days')
 
-# Evaluate performance
-df_p = performance_metrics(df_cv)
-print(df_p[['horizon', 'rmse', 'mape']])
+# # Evaluate performance and check if we are getting low values for rmse and mape
+# df_p = performance_metrics(df_cv)
+# print(df_p[['horizon', 'rmse', 'mape']])

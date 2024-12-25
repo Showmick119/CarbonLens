@@ -8,9 +8,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"
 # Import aggregated_scores from random_forest_model.py
 from random_forest_model import aggregated_scores
 
-# Import the functions from sentiment analysis file
-from ai_sentiment_analysis import main as sentiment_analysis
-
 # Set the page configuration
 st.set_page_config(page_title="Manufacturer Analysis", page_icon="📊", layout="wide")
 
@@ -30,8 +27,10 @@ co2_reduction_rate_path = f"manufacturer_advanced_visuals/{selected_manufacturer
 mpg_growth_rate_path = f"manufacturer_advanced_visuals/{selected_manufacturer}_mpg_growth_rate.png"
 co2_to_mpg_ratio_path = f"manufacturer_advanced_visuals/{selected_manufacturer}_co2_to_mpg_ratio.png"
 
-# Display forecast plot with description box
+# Header for the analysis of each selected manufacturer
 st.subheader(f"Analysis for {selected_manufacturer}")
+
+# Display forecast plot with description box
 st.subheader("Sustainability Score Forecast")
 col1, col2 = st.columns([2, 0.8])
 with col1:
@@ -100,9 +99,9 @@ sustainability_score = aggregated_scores[
 
 st.subheader("AI Sentiment Analysis")
 if st.button("Run Sentiment Analysis"):
-    pdf_path = f"sustainability_reports/{selected_manufacturer} Sustainability Report.pdf"  # Example path for manufacturer-specific PDFs
+    pdf_path = f"sustainability_reports/{selected_manufacturer} Sustainability Report.pdf"
     if os.path.exists(pdf_path):
-        with st.spinner("Running sentiment analysis. This may take a few moments..."):
+        with st.spinner("Running sentiment analysis. Please be patient, this may take a few moments..."):
             from ai_sentiment_analysis import main as sentiment_analysis
             final_score, explanation = sentiment_analysis(selected_manufacturer, sustainability_score, pdf_path=pdf_path)
             

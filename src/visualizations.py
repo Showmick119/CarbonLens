@@ -48,8 +48,9 @@ for manufacturer in specific_manufacturers_filtered['Manufacturer'].unique():
     })
 
     # Plot 1: Real-World CO2 (g/mi) over time
-    fig, ax = plt.subplots(figsize=(10, 6), facecolor='black')
-    ax.set_facecolor('black')
+    fig, ax = plt.subplots(figsize=(12, 5))  # Slightly larger aspect ratio
+    ax.set_facecolor('none')  # Transparent axes background
+    fig.patch.set_alpha(0)  # Transparent figure background
     ax.plot(
         manufacturer_data['Model Year'],
         manufacturer_data['Real-World CO2 (g/mi)'],
@@ -59,36 +60,63 @@ for manufacturer in specific_manufacturers_filtered['Manufacturer'].unique():
         color='cyan',
         label='Real-World CO2 (g/mi)'
     )
-    ax.set_xlabel("Year", fontsize=14, weight='bold', color='white')
-    ax.set_ylabel("CO2 Emissions (g/mi)", fontsize=14, weight='bold', color='white')
-    ax.tick_params(axis='x', colors='white', labelsize=12)
-    ax.tick_params(axis='y', colors='white', labelsize=12)
-    ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
-    ax.legend(loc='upper left', fontsize=12, facecolor='black', edgecolor='white', labelcolor='white')
-    ax.set_title(f"{manufacturer} CO2 Emissions Over Time", fontsize=16, weight='bold', color='white')
-    fig.savefig(f"{plots_dir}/{manufacturer}_co2_plot.png", dpi=300, facecolor='black')
+    ax.set_xlabel("Year", fontsize=12, color='white')  # Non-bold labels
+    ax.set_ylabel("CO2 Emissions (g/mi)", fontsize=12, color='white')  # Non-bold labels
+    ax.tick_params(axis='x', colors='white', labelsize=10)
+    ax.tick_params(axis='y', colors='white', labelsize=10)
+    ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.5)
+
+    # Updated legend with rounded box in the top-right corner
+    legend = ax.legend(
+        loc='upper right',
+        fontsize=10,
+        frameon=True,
+        framealpha=0.5,
+        facecolor='black',
+        edgecolor='white',
+        labelcolor='white'
+    )
+    legend.get_frame().set_linewidth(1.5)
+
+    # Optimize space and save
+    plt.tight_layout()  # Ensure graph fills the image
+    fig.savefig(f"{plots_dir}/{manufacturer}_co2_plot.png", dpi=300, transparent=True, bbox_inches='tight')
     plt.close(fig)
 
     # Plot 2: Real-World MPG over time
-    fig, ax = plt.subplots(figsize=(10, 6), facecolor='black')
-    ax.set_facecolor('black')
+    fig, ax = plt.subplots(figsize=(12, 5))  # Slightly larger aspect ratio
+    ax.set_facecolor('none')  # Transparent axes background
+    fig.patch.set_alpha(0)  # Transparent figure background
     ax.plot(
         manufacturer_data['Model Year'],
         manufacturer_data['Real-World MPG'],
         marker='o',
         linestyle='-',
         linewidth=2,
-        color='lime',
+        color='#228B22',  # Forest green
         label='Real-World MPG'
     )
-    ax.set_xlabel("Year", fontsize=14, weight='bold', color='white')
-    ax.set_ylabel("Fuel Efficiency (MPG)", fontsize=14, weight='bold', color='white')
-    ax.tick_params(axis='x', colors='white', labelsize=12)
-    ax.tick_params(axis='y', colors='white', labelsize=12)
-    ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
-    ax.legend(loc='upper left', fontsize=12, facecolor='black', edgecolor='white', labelcolor='white')
-    ax.set_title(f"{manufacturer} MPG Over Time", fontsize=16, weight='bold', color='white')
-    fig.savefig(f"{plots_dir}/{manufacturer}_mpg_plot.png", dpi=300, facecolor='black')
+    ax.set_xlabel("Year", fontsize=12, color='white')  # Non-bold labels
+    ax.set_ylabel("Fuel Efficiency (MPG)", fontsize=12, color='white')  # Non-bold labels
+    ax.tick_params(axis='x', colors='white', labelsize=10)
+    ax.tick_params(axis='y', colors='white', labelsize=10)
+    ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.5)
+
+    # Updated legend with rounded box in the top-left corner
+    legend = ax.legend(
+        loc='upper left',
+        fontsize=10,
+        frameon=True,
+        framealpha=0.5,
+        facecolor='black',
+        edgecolor='white',
+        labelcolor='white'
+    )
+    legend.get_frame().set_linewidth(1.5)
+
+    # Optimize space and save
+    plt.tight_layout()  # Ensure graph fills the image
+    fig.savefig(f"{plots_dir}/{manufacturer}_mpg_plot.png", dpi=300, transparent=True, bbox_inches='tight')
     plt.close(fig)
 
-    print(f"Enhanced dark-mode plots for {manufacturer} saved successfully!")
+    print(f"Updated transparent plots for {manufacturer} saved successfully!")

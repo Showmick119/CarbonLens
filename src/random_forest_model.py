@@ -30,37 +30,44 @@ powertrain_columns = [
     'Powertrain - Gasoline without Start/Stop'
 ]
 
-# Cleaning the powertrain column's values
+# Clean and convert Powertrain columns
 for powertrain in powertrain_columns:
-    specific_manufacturers_filtered[powertrain] = specific_manufacturers_filtered[powertrain].replace('-',0)
+    specific_manufacturers_filtered[powertrain] = specific_manufacturers_filtered[powertrain].replace('-', 0)
     specific_manufacturers_filtered[powertrain] = specific_manufacturers_filtered[powertrain].astype(str)
-    specific_manufacturers_filtered[powertrain] = specific_manufacturers_filtered[powertrain].str.strip('%')
-    specific_manufacturers_filtered[powertrain] = specific_manufacturers_filtered[powertrain].astype(float)
+    
+    # Detect if value is a percentage and convert to decimal
+    specific_manufacturers_filtered[powertrain] = specific_manufacturers_filtered[powertrain].apply(
+        lambda x: float(x.strip('%')) / 100 if '%' in x else float(x)
+    )
 
-specific_manufacturers_filtered[powertrain_columns] = scaler.fit_transform(specific_manufacturers_filtered[powertrain_columns])
-
-# Assign weights to powertrain columns
+# Assign weights to powertrain columns according to their contribution to sustainability, and make sure they add up to 1
 powertrain_weights = {
-    'Powertrain - Diesel': -0.3,  # Strong negative weight due to high emissions
-    'Powertrain - Battery Electric Vehicle (BEV)': 0.4,  # Higher positive weight for sustainability
+    'Powertrain - Diesel': 0.000,  # No contribution due to high emissions
+    'Powertrain - Battery Electric Vehicle (BEV)': 0.35,  # Highest positive weight for sustainability
     'Powertrain - Plug-in Hybrid Electric Vehicle (PHEV)': 0.25,  # Transitional technology
-    'Powertrain - Fuel Cell Electric Vehicle (FCEV)': 0.35,  # Promising but less prevalent than BEV
-    'Powertrain - Other (incl. CNG)': 0.1,  # Moderate weight for cleaner fuel alternative
-    'Powertrain - Gasoline Mild Hybrid/MHEV': 0.15,  # Intermediate improvement
-    'Powertrain - Gasoline Strong Hybrid/HEV': 0.2,  # Stronger hybrid sustainability
-    'Powertrain - Gasoline with Start/Stop': 0.1,  # Small positive impact
-    'Powertrain - Gasoline without Start/Stop': -0.15  # Penalize lack of efficiency improvements
+    'Powertrain - Fuel Cell Electric Vehicle (FCEV)': 0.20,  # Promising but less widespread
+    'Powertrain - Other (incl. CNG)': 0.03,  # Moderate weight for cleaner alternatives
+    'Powertrain - Gasoline Mild Hybrid/MHEV': 0.07,  # Small positive impact
+    'Powertrain - Gasoline Strong Hybrid/HEV': 0.10,  # Stronger hybrid sustainability
+    'Powertrain - Gasoline with Start/Stop': 0.00,  # No contribution to sustainability
+    'Powertrain - Gasoline without Start/Stop': 0.000  # No contribution due to inefficiency
 }
+
+# Initializing the powertrain contribution columnn for each 
+specific_manufacturers_filtered['Powertrain Contribution'] = 0
 
 # Calculate weighted sum for powertrain columns
 for col, weight in powertrain_weights.items():
-    specific_manufacturers_filtered['Powertrain Contribution'] = sum(specific_manufacturers_filtered[col] * weight)
+    specific_manufacturers_filtered['Powertrain Contribution'] += specific_manufacturers_filtered[col] * weight
+
+# Applying normalization to the Powertrain Contribution so that its not underepresented in the final score and has contribution proportional to the other features
+specific_manufacturers_filtered['Powertrain Contribution'] = scaler.fit_transform(specific_manufacturers_filtered[['Powertrain Contribution']])
 
 # Manually combine into Sustainability Score, a benchmark with which we can train the Random Forest Model and evaluate the values it predicts
 specific_manufacturers_filtered['Sustainability Score'] = (
-    specific_manufacturers_filtered['Inverted CO2'] * 0.4 +  # Adjusted weight
+    specific_manufacturers_filtered['Inverted CO2'] * 0.4 +
     specific_manufacturers_filtered['Ton-MPG (Real-World)'] * 0.3 +
-    specific_manufacturers_filtered['Powertrain Contribution'] * 0.3  # Higher weight for powertrain
+    specific_manufacturers_filtered['Powertrain Contribution'] * 0.3
 )
 
 # Combine features and target
