@@ -47,8 +47,8 @@ except FileNotFoundError:
     st.error(f"Unable to load image at {boxplot_path}")
 
 # Display Top Sustainability Efforts
-st.subheader("Top Sustainability Efforts by Manufacturers")
-top_efforts_path = "manufacturer_advanced_visuals/top_sustainability_efforts.png"
+st.subheader("All Manufacturers Sustainability Growth")
+top_efforts_path = "manufacturer_advanced_visuals/all_manufacturers_sustainability_growth_updated.png"
 try:
     top_efforts_img = Image.open(top_efforts_path)
     st.image(top_efforts_img, caption="Top Sustainability Efforts by Manufacturers", use_container_width=True)

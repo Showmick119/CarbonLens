@@ -91,6 +91,46 @@ with col2:
         unsafe_allow_html=True
     )
 
+# Display CO2 reduction rate plot with description box
+st.subheader("CO2 Reduction Rate Over Time")
+col1, col2 = st.columns([2, 0.8])
+with col1:
+    if os.path.exists(co2_reduction_rate_path):
+        st.image(co2_reduction_rate_path, width=1200)
+    else:
+        st.error(f"Plot not found: {co2_reduction_rate_path}")
+with col2:
+    st.markdown(
+        """
+        <div>
+            <p style="font-size: 20px; line-height: 2.0;">
+                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Display MPG growth rate plot with description box
+st.subheader("MPG Growth Rate Over Time")
+col1, col2 = st.columns([2, 0.8])
+with col1:
+    if os.path.exists(mpg_growth_rate_path):
+        st.image(mpg_growth_rate_path, width=1200)
+    else:
+        st.error(f"Plot not found: {mpg_growth_rate_path}")
+with col2:
+    st.markdown(
+        """
+        <div>
+            <p style="font-size: 20px; line-height: 2.0;">
+                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 # AI Tool for Online Sentiment Analysis
 sustainability_score = aggregated_scores[
     (aggregated_scores["Manufacturer"] == selected_manufacturer) &
