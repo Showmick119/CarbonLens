@@ -218,7 +218,7 @@ for manufacturer in specific_2024['Manufacturer'].unique():
     ]
 
     # Plot the pie chart
-    fig, ax = plt.subplots(figsize=(12, 6))  # Adjusted size for aesthetics
+    fig, ax = plt.subplots(figsize=(12, 4))  # Adjusted size for aesthetics
     wedges, texts = ax.pie(
         powertrain_distribution,
         colors=[powertrain_colors[col] for col in powertrain_distribution.index],
