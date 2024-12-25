@@ -15,33 +15,33 @@ aggregated_scores = aggregated_scores[aggregated_scores['Manufacturer'] != 'Tesl
 plots_dir = "manufacturer_advanced_visuals"
 os.makedirs(plots_dir, exist_ok=True)
 
-# 1. **CO2 Reduction Rate Over Time (Bar Graph)**
-for manufacturer in aggregated_scores['Manufacturer'].unique():
-    data = aggregated_scores[aggregated_scores['Manufacturer'] == manufacturer]
-    data = data.sort_values(by='Model Year')
-    data['CO2 Reduction Rate (%)'] = data['Yearly Sustainability Score'].pct_change() * 100
+# # 1. **CO2 Reduction Rate Over Time (Bar Graph)**
+# for manufacturer in aggregated_scores['Manufacturer'].unique():
+#     data = aggregated_scores[aggregated_scores['Manufacturer'] == manufacturer]
+#     data = data.sort_values(by='Model Year')
+#     data['CO2 Reduction Rate (%)'] = data['Yearly Sustainability Score'].pct_change() * 100
 
-    fig, ax = plt.subplots(figsize=(12, 5))
-    ax.bar(
-        data['Model Year'],
-        data['CO2 Reduction Rate (%)'],
-        color='cyan',
-        edgecolor='white'
-    )
-    ax.axhline(y=0, color='gray', linestyle='--', linewidth=0.5)
-    ax.set_facecolor('none')  # Transparent background
-    fig.patch.set_alpha(0)
-    ax.set_xlabel("Year", fontsize=12, color='white')
-    ax.set_ylabel("CO2 Reduction Rate (%)", fontsize=12, color='white')
-    ax.tick_params(axis='x', colors='white', labelsize=10)
-    ax.tick_params(axis='y', colors='white', labelsize=10)
+#     fig, ax = plt.subplots(figsize=(12, 5))
+#     ax.bar(
+#         data['Model Year'],
+#         data['CO2 Reduction Rate (%)'],
+#         color='cyan',
+#         edgecolor='white'
+#     )
+#     ax.axhline(y=0, color='gray', linestyle='--', linewidth=0.5)
+#     ax.set_facecolor('none')  # Transparent background
+#     fig.patch.set_alpha(0)
+#     ax.set_xlabel("Year", fontsize=12, color='white')
+#     ax.set_ylabel("CO2 Reduction Rate (%)", fontsize=12, color='white')
+#     ax.tick_params(axis='x', colors='white', labelsize=10)
+#     ax.tick_params(axis='y', colors='white', labelsize=10)
 
-    # Add y-axis gridlines
-    ax.grid(axis='y', color='gray', linestyle='--', linewidth=0.5, alpha=0.7)  # Transparent gridlines
+#     # Add y-axis gridlines
+#     ax.grid(axis='y', color='gray', linestyle='--', linewidth=0.5, alpha=0.7)  # Transparent gridlines
 
-    plt.tight_layout()
-    fig.savefig(f"{plots_dir}/{manufacturer}_co2_reduction_rate.png", dpi=300, transparent=True, bbox_inches='tight')
-    plt.close(fig)
+#     plt.tight_layout()
+#     fig.savefig(f"{plots_dir}/{manufacturer}_co2_reduction_rate.png", dpi=300, transparent=True, bbox_inches='tight')
+#     plt.close(fig)
 
 # # 2. **MPG Efficiency Growth Rate (Bar Graph)**
 # for manufacturer in aggregated_scores['Manufacturer'].unique():
@@ -198,60 +198,60 @@ powertrain_colors = {
     'Powertrain - Gasoline without Start/Stop': '#c2c2c2',
 }
 
-# # Filter for 2024 data
-# specific_2024 = specific_manufacturers_filtered[specific_manufacturers_filtered['Model Year'] == 2024]
+# Filter for 2024 data
+specific_2024 = specific_manufacturers_filtered[specific_manufacturers_filtered['Model Year'] == 2024]
 
-# for manufacturer in specific_2024['Manufacturer'].unique():
-#     # Filter rows for the specific manufacturer
-#     manufacturer_data = specific_2024[specific_2024['Manufacturer'] == manufacturer]
+for manufacturer in specific_2024['Manufacturer'].unique():
+    # Filter rows for the specific manufacturer
+    manufacturer_data = specific_2024[specific_2024['Manufacturer'] == manufacturer]
 
-#     # Aggregate the powertrain columns by summing
-#     powertrain_distribution = manufacturer_data[powertrain_columns].sum()
+    # Aggregate the powertrain columns by summing
+    powertrain_distribution = manufacturer_data[powertrain_columns].sum()
 
-#     # Normalize the distribution to ensure it sums to 1
-#     powertrain_distribution = powertrain_distribution / powertrain_distribution.sum()
+    # Normalize the distribution to ensure it sums to 1
+    powertrain_distribution = powertrain_distribution / powertrain_distribution.sum()
 
-#     # Generate labels for the legend including percentages
-#     legend_labels = [
-#         f"{category} - {percentage:.1%}"
-#         for category, percentage in zip(powertrain_distribution.index, powertrain_distribution.values)
-#     ]
+    # Generate labels for the legend including percentages
+    legend_labels = [
+        f"{category} - {percentage:.1%}"
+        for category, percentage in zip(powertrain_distribution.index, powertrain_distribution.values)
+    ]
 
-#     # Plot the pie chart
-#     fig, ax = plt.subplots(figsize=(12, 6))  # Adjusted size for aesthetics
-#     wedges, texts = ax.pie(
-#         powertrain_distribution,
-#         colors=[powertrain_colors[col] for col in powertrain_distribution.index],
-#         startangle=90,  # Starts at the top
-#         wedgeprops=dict(width=1.0)  # Full-filled pie
-#     )
+    # Plot the pie chart
+    fig, ax = plt.subplots(figsize=(12, 6))  # Adjusted size for aesthetics
+    wedges, texts = ax.pie(
+        powertrain_distribution,
+        colors=[powertrain_colors[col] for col in powertrain_distribution.index],
+        startangle=90,  # Starts at the top
+        wedgeprops=dict(width=1.0)  # Full-filled pie
+    )
 
-#     # Add legend on the right side of the chart with percentage values
-#     legend_elements = [
-#         Patch(facecolor=powertrain_colors[col], label=label)
-#         for col, label in zip(powertrain_distribution.index, legend_labels)
-#     ]
-#     ax.legend(
-#         handles=legend_elements,
-#         loc='center left',
-#         bbox_to_anchor=(1.2, 0.5),  # Adjusted spacing for bigger legend
-#         frameon=False,
-#         fontsize=11,  # Increased font size by ~15–20%
-#         labelcolor='white',
-#     )
+    # Add legend on the left side of the chart with percentage values
+    legend_elements = [
+        Patch(facecolor=powertrain_colors[col], label=label)
+        for col, label in zip(powertrain_distribution.index, legend_labels)
+    ]
+    ax.legend(
+        handles=legend_elements,
+        loc='center right',
+        bbox_to_anchor=(0.0, 0.5),  # Reduced spacing between pie and legend
+        frameon=False,
+        fontsize=9,  # Reduced font size by ~15%
+        labelcolor='white',
+    )
 
-#     # Remove the title
-#     fig.patch.set_alpha(0)  # Transparent background
-#     ax.set_facecolor('none')  # Transparent face color
+    # Remove the title
+    fig.patch.set_alpha(0)  # Transparent background
+    ax.set_facecolor('none')  # Transparent face color
 
-#     # Save the pie chart
-#     plt.tight_layout()
-#     fig.savefig(
-#         f"{plots_dir}/{manufacturer}_powertrain_pie_chart.png",
-#         dpi=300,
-#         transparent=True,
-#         bbox_inches='tight',
-#     )
-#     plt.close(fig)
+    # Save the pie chart
+    plt.tight_layout()
+    fig.savefig(
+        f"{plots_dir}/{manufacturer}_powertrain_pie_chart.png",
+        dpi=300,
+        transparent=True,
+        bbox_inches='tight',
+    )
+    plt.close(fig)
 
 print("All advanced visuals have been successfully updated.")

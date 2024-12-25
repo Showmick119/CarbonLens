@@ -25,7 +25,7 @@ co2_plot_path = f"manufacturer_co2_mpg_plots/{selected_manufacturer}_co2_plot.pn
 mpg_plot_path = f"manufacturer_co2_mpg_plots/{selected_manufacturer}_mpg_plot.png"
 co2_reduction_rate_path = f"manufacturer_advanced_visuals/{selected_manufacturer}_co2_reduction_rate.png"
 mpg_growth_rate_path = f"manufacturer_advanced_visuals/{selected_manufacturer}_mpg_growth_rate.png"
-co2_to_mpg_ratio_path = f"manufacturer_advanced_visuals/{selected_manufacturer}_co2_to_mpg_ratio.png"
+powertrain_pie_chart_path = f"manufacturer_advanced_visuals/{selected_manufacturer}_powertrain_pie_chart.png"
 
 # Header for the analysis of each selected manufacturer
 st.subheader(f"Analysis for {selected_manufacturer}")
@@ -119,6 +119,26 @@ with col1:
         st.image(mpg_growth_rate_path, width=1200)
     else:
         st.error(f"Plot not found: {mpg_growth_rate_path}")
+with col2:
+    st.markdown(
+        """
+        <div>
+            <p style="font-size: 20px; line-height: 2.0;">
+                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Display powertrain distribution pie chart with description box
+st.subheader("Powertrain Distribution")
+col1, col2 = st.columns([2, 0.8])
+with col1:
+    if os.path.exists(powertrain_pie_chart_path):
+        st.image(powertrain_pie_chart_path, width=1200)
+    else:
+        st.error(f"Plot not found: {powertrain_pie_chart_path}")
 with col2:
     st.markdown(
         """
