@@ -1,6 +1,21 @@
 import streamlit as st
+import pandas as pd
 import os
 import sys
+
+# Load the CSV file containing graph explanations
+csv_path = "data/explanations.csv" 
+explanations_df = pd.read_csv(csv_path)
+
+# Function to get the explanations for each manufacturer's plots
+def get_explanation(manufacturer, graph_type):
+    """Fetch explanation for a given manufacturer and graph type from the DataFrame."""
+    row = explanations_df[(explanations_df['Manufacturer'] == manufacturer) & 
+                          (explanations_df['Graph Type'] == graph_type)]
+    if not row.empty:
+        return row['Explanation'].values[0]
+    else:
+        return "Explanation not found for this graph."
 
 # Add src folder to system path, as it's in a different folder from this file
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
@@ -40,12 +55,12 @@ with col1:
     else:
         st.error(f"Plot not found: {forecast_plot_path}")
 with col2:
+    explanation = get_explanation(selected_manufacturer, "Sustainability Score")
     st.markdown(
-        """
+        f"""
         <div>
-            <p style="font-size: 20px; line-height: 2.0;">
-                This graph shows the historical and predicted sustainability score trends for the selected manufacturer. 
-                The confidence interval highlights the uncertainty in predictions.
+            <p style="font-size: 15px; line-height: 2.0;">
+                {explanation}
             </p>
         </div>
         """,
@@ -61,11 +76,12 @@ with col1:
     else:
         st.error(f"Plot not found: {co2_plot_path}")
 with col2:
+    explanation = get_explanation(selected_manufacturer, "CO2")
     st.markdown(
-        """
+        f"""
         <div>
-            <p style="font-size: 20px; line-height: 2.0;">
-                This graph shows the real-world (not under testing conditions) CO2 emissions from the cars of these manufacturers.
+            <p style="font-size: 15px; line-height: 2.0;">
+                {explanation}
             </p>
         </div>
         """,
@@ -81,11 +97,12 @@ with col1:
     else:
         st.error(f"Plot not found: {mpg_plot_path}")
 with col2:
+    explanation = get_explanation(selected_manufacturer, "MPG")
     st.markdown(
-        """
+        f"""
         <div>
-            <p style="font-size: 20px; line-height: 2.0;">
-                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            <p style="font-size: 15px; line-height: 2.0;">
+                {explanation}
             </p>
         </div>
         """,
@@ -101,11 +118,12 @@ with col1:
     else:
         st.error(f"Plot not found: {co2_reduction_rate_path}")
 with col2:
+    explanation = get_explanation(selected_manufacturer, "CO2 Reduction")
     st.markdown(
-        """
+        f"""
         <div>
-            <p style="font-size: 20px; line-height: 2.0;">
-                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            <p style="font-size: 15px; line-height: 2.0;">
+                {explanation}
             </p>
         </div>
         """,
@@ -121,11 +139,12 @@ with col1:
     else:
         st.error(f"Plot not found: {mpg_growth_rate_path}")
 with col2:
+    explanation = get_explanation(selected_manufacturer, "MPG Growth")
     st.markdown(
-        """
+        f"""
         <div>
-            <p style="font-size: 20px; line-height: 2.0;">
-                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            <p style="font-size: 15px; line-height: 2.0;">
+                {explanation}
             </p>
         </div>
         """,
@@ -141,11 +160,12 @@ with col1:
     else:
         st.error(f"Plot not found: {powertrain_pie_chart_path}")
 with col2:
+    explanation = get_explanation(selected_manufacturer, "Powertrain")
     st.markdown(
-        """
+        f"""
         <div>
-            <p style="font-size: 20px; line-height: 2.0;">
-                This graph shows the real-world (not under testing conditions) MPG from the cars of these manufacturers. This gives insights into these cars' efficiency, and how many miles they are going per gallon consumed.
+            <p style="font-size: 15px; line-height: 2.0;">
+                {explanation}
             </p>
         </div>
         """,
@@ -158,8 +178,8 @@ sustainability_score = aggregated_scores[
     (aggregated_scores["Model Year"] == 2024)
 ]["Yearly Sustainability Score"].values[0]
 
-st.subheader("AI Sentiment Analysis")
-if st.button("Run Sentiment Analysis"):
+st.subheader("🤖 AI Sentiment Analysis")
+if st.button("🔍 Run Sentiment Analysis"):
     pdf_path = f"sustainability_reports/{selected_manufacturer} Sustainability Report.pdf"
 
     # Invalidate and update cache
@@ -170,8 +190,15 @@ if st.button("Run Sentiment Analysis"):
             from ai_sentiment_analysis import main as sentiment_analysis
             final_score, explanation = sentiment_analysis(selected_manufacturer, sustainability_score, pdf_path=pdf_path)
 
-            st.write(f"Adjusted Sustainability Score: {final_score:.2f}")
-            st.write("Explanation:")
-            st.write(explanation)
+            st.success(f"✅ Adjusted Sustainability Score: **{final_score:.2f}**")
+            st.markdown(
+                f"""
+                <div style="padding: 15px; border-radius: 10px; border: 1px solid #ffffff;">
+                    <h4 style="color:#ffffff;">Explanation:</h4>
+                    <p style="font-size: 16px; color:#ffffff;">{explanation}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
     else:
-        st.error(f"PDF not found for {selected_manufacturer}.")
+        st.error(f"❌ PDF not found for {selected_manufacturer}.")

@@ -5,7 +5,7 @@ from PIL import Image
 st.set_page_config(page_title="Home - Carbon Lens", page_icon="🗂️", layout="wide")
 
 # Page Title
-st.title("Welcome to the Sustainability Analysis Dashboard")
+st.title("🌱 Welcome to the Carbon Lens Dashboard")
 st.markdown("""
 This dashboard provides insights into automotive manufacturers' sustainability efforts and individual car models' environmental impacts. 
 Through advanced AI and data analysis, we evaluate key metrics to generate sustainability scores and trends.
