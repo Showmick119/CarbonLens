@@ -159,6 +159,6 @@ This tool is for educational purposes and does not aim to critique or promote an
 
 ## 📝 License
 
-This project is open-source and available under the [MIT License](LICENSE).
+Thi project is open-source and available under the [MIT License](LICENSE).
 
 ---
