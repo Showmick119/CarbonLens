@@ -1,6 +1,3 @@
-
----
-
 # 🌍 Carbon Lens Dashboard
 
 ## 📖 Overview
