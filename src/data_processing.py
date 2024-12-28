@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Read the file 
-emissions_data = pd.read_csv("data\emissions_data.csv")
+emissions_data = pd.read_csv("../data/emissions_data.csv")
 
 # As many manufacturers in the data set don't have valid entries before 2008, to maintain consistency, we will only work with the data from 2008 onwards
 emissions_data['Model Year'] = emissions_data['Model Year'].replace('Prelim. 2024', '2024')
