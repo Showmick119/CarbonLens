@@ -25,10 +25,10 @@ from random_forest_model import aggregated_scores
 from ai_sentiment_analysis import update_cache_metadata
 
 # Set the page configuration
-st.set_page_config(page_title="Manufacturer Analysis", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Manufacturer Analysis", page_icon="📈", layout="wide")
 
 # Page Title
-st.title("Manufacturer Analysis")
+st.title("🔎 Manufacturer Analysis")
 st.write("Welcome to the Manufacturer Analysis page. Here you can explore sustainability efforts and metrics for different car manufacturers. Use the dropdown menu to select a manufacturer and view their detailed analysis.")
 
 # Dropdown menu for selecting manufacturers
@@ -179,7 +179,7 @@ sustainability_score = aggregated_scores[
 ]["Yearly Sustainability Score"].values[0]
 
 st.subheader("🤖 AI Sentiment Analysis")
-if st.button("🔍 Run Sentiment Analysis"):
+if st.button("⚡ Run Sentiment Analysis"):
     pdf_path = f"sustainability_reports/{selected_manufacturer} Sustainability Report.pdf"
 
     # Invalidate and update cache

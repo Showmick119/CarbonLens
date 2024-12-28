@@ -8,7 +8,7 @@ import io
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-# Expanded car_labels with 500 popular car models
+# List of 500 most popular car models the user is most likely to input
 car_labels = [
     "Hyundai Tucson", "Toyota Camry", "Honda Civic", "Mercedes-Benz E-Class", "BMW 5 Series", "Ford Mustang", 
     "BMW 3 Series", "Audi A4", "Tesla Model 3", "Chevrolet Malibu", "Nissan Altima", "Volkswagen Passat",
@@ -48,12 +48,22 @@ co = cohere.Client('jgqeITEBHzYLimbQnsay4dH7uIJIDaSA6QYUUZIz')
 
 # Cohere Sustainability Scoring
 def get_sustainability_score(car_model):
-    prompt = f"Analyze the sustainability of '{car_model}' and give a score (0-100) with a short explanation."
+    prompt = f"""
+    Analyze the sustainability of the car model '{car_model}' in 100 words. Focus on:
+    - Environmental impact (Carbon Emissions during usage)
+    - Efficiency (Miles Per Gallon)
+    - Company's manufacturing process and its environmental effect. Take that into account when analyzing the sustainability.
+    - Powertrain type
+    - Materials used and recycling
+    - Comparison with industry standards and other car companies
+
+    Reasonably provide a sustainability score (0-100) and a brief explanation of 100 words.
+    """
     response = co.generate(
         model='command-xlarge-nightly',
         prompt=prompt,
-        max_tokens=200,
-        temperature=0.7
+        max_tokens=400,  # Increased limit
+        temperature=0.7,
     )
     result = response.generations[0].text.strip()
     return result
@@ -69,27 +79,73 @@ def preprocess_image(image):
     return car_labels[predicted_idx]
 
 # Streamlit App
-st.set_page_config(page_title="AI Car Sustainability Analysis", page_icon="🚗", layout="wide")
-st.title("🚗 Car Sustainability Analyzer")
+st.set_page_config(page_title="AI Car Sustainability Analyzer", page_icon="🚗", layout="wide")
+st.title("♻️ Car Sustainability Analyzer")
+
+# Add a brief description about the page
+st.markdown("""
+Welcome to the Car Sustainability Analyzer. This AI tool allows you to analyze the sustainability of various car models. Our analysis considers emissions, energy efficiency, and industry standards to generate a reliable sustainability score 🌿
+- **Upload a car image** to identify the model and assess its environmental impact.  
+- **Enter a car model manually** for a detailed sustainability score and explanation.  
+""")
+
+# Initialize session state variables
+if "car_model" not in st.session_state:
+    st.session_state.car_model = None
+if "corrected_model" not in st.session_state:
+    st.session_state.corrected_model = None
+if "analysis_result" not in st.session_state:
+    st.session_state.analysis_result = None
 
 # Input Options
 input_method = st.radio("Choose an input method:", ("Upload Car Image", "Enter Car Model"))
 
 if input_method == "Upload Car Image":
     uploaded_file = st.file_uploader("Upload an image of the car:", type=["jpg", "jpeg", "png"])
-    if uploaded_file and st.button("Analyze Image"):
-        car_model = preprocess_image(uploaded_file)
-        st.success(f"Predicted Car Model: {car_model}")
-        result = get_sustainability_score(car_model)
-        st.info("Sustainability Analysis:")
-        st.write(result)
+    
+    if uploaded_file:
+        if st.button("Analyze Image"):
+            with st.spinner("Analyzing image and generating sustainability score..."):
+                st.session_state.car_model = preprocess_image(uploaded_file)
+                st.success(f"Predicted Car Model: {st.session_state.car_model}")
+
+    if st.session_state.car_model:
+        # Editable car model input
+        corrected_model = st.text_input("If the car model prediction is incorrect, please enter the correct model below. Otherwise, click the **Analyze Model** button to proceed:", 
+                                        st.session_state.car_model)
+        
+        if st.button("Analyze Model"):
+            with st.spinner("Generating sustainability score..."):
+                st.session_state.corrected_model = corrected_model
+                st.session_state.analysis_result = get_sustainability_score(st.session_state.corrected_model)
+        
+        # Display sustainability analysis if available
+        if st.session_state.analysis_result:
+            st.markdown(
+                f"""
+                <div style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; backdrop-filter: blur(10px);">
+                <strong>Sustainability Analysis:</strong>
+                <p>{st.session_state.analysis_result}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
 elif input_method == "Enter Car Model":
-    car_model = st.text_input("Enter the car model (e.g., Toyota RAV4, Tesla Model 3):")
-    if car_model and st.button("Analyze Model"):
-        if car_model in car_labels:
-            result = get_sustainability_score(car_model)
-            st.info("Sustainability Analysis:")
-            st.write(result)
-        else:
-            st.error("Car model not recognized. Please check your input.")
+    car_model = st.text_input("Enter the car model (e.g., Toyota Camry, Tesla Model 3):")
+    if car_model:
+        if st.button("Analyze Model"):
+            with st.spinner("Generating sustainability score..."):
+                st.session_state.analysis_result = get_sustainability_score(car_model)
+        
+        # Display sustainability analysis if available
+        if st.session_state.analysis_result:
+            st.markdown(
+                f"""
+                <div style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; backdrop-filter: blur(10px);">
+                <strong>Sustainability Analysis:</strong>
+                <p>{st.session_state.analysis_result}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
