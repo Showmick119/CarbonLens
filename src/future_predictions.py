@@ -91,9 +91,9 @@ for manufacturer, data in manufacturer_data.items():
     print(f"Saved plot for {manufacturer} to {plots_dir}/{manufacturer}_forecast_plot.png")
 
 
-# # # Cross-validation
-# # df_cv = cross_validation(model, initial='730 days', period='180 days', horizon='365 days')
+# # Cross-validation
+# df_cv = cross_validation(model, initial='730 days', period='180 days', horizon='365 days')
 
-# # # Evaluate performance and check if we are getting low values for rmse and mape
-# # df_p = performance_metrics(df_cv)
-# # print(df_p[['horizon', 'rmse', 'mape']])
+# # Evaluate performance and check if we are getting low values for rmse and mape
+# df_p = performance_metrics(df_cv)
+# print(df_p[['horizon', 'rmse', 'mape']])
