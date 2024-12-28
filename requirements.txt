@@ -11,3 +11,4 @@ logging
 scikit-learn
 transformers
 prophet
+torch
