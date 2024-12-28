@@ -1,83 +1,162 @@
-# 🚗 Car Sustainability Analyzer
+
+---
+
+# 🌍 Carbon Lens Dashboard
 
 ## 📖 Overview
 
-The **Car Sustainability Analyzer** is an AI-powered tool that evaluates the sustainability of car models based on factors such as emissions, materials, energy efficiency, and manufacturing practices. Users can upload a car image or input a car model to receive a **Sustainability Score** and a detailed explanation.
-
-This project combines **AI image recognition** for car model identification with **Cohere's NLP API** to generate sustainability scores and explanations. It aims to promote awareness about vehicle sustainability without targeting any specific manufacturer.
+The **Carbon Lens Dashboard** is an AI-powered application designed to assess and analyze the sustainability of automotive manufacturers and individual car models. This tool integrates advanced AI models, machine learning, and sentiment analysis to provide insightful sustainability scores and trends, helping users understand environmental impacts across the automotive industry.
 
 ---
 
-## 🛠️ Features
+## 🚀 Features
 
-- **Car Model Identification:** Upload a car image, and the tool predicts the car model using a trained **CLIP model**.
-- **Sustainability Score:** Analyzes key environmental factors to generate a sustainability score and detailed explanation using the **Cohere API**.
-- **Manual Input Option:** Users can manually correct the car model if the prediction is inaccurate.
-- **Visual Insights:** Interactive graphs display sustainability trends across manufacturers and years.
+1. **AI-Powered Car Sustainability Analysis**:
+   - Upload car images or input car model names to evaluate their sustainability.
+   - Scores and explanations are generated based on factors such as emissions, energy efficiency, and manufacturing practices.
 
----
+2. **Manufacturer Analysis**:
+   - Detailed visualizations for individual manufacturers, highlighting:
+     - CO2 emissions over time.
+     - Fuel efficiency (MPG) growth.
+     - Sustainability trends and forecasts using **Prophet**.
+     - Powertrain distribution for advanced insights.
 
-## 🚀 How to Use
+3. **Sentiment-Enhanced Adjustments**:
+   - Combines **Reddit discussions** and **manufacturer sustainability reports** to enhance score accuracy using **sentiment analysis**.
+   - Sentiment scores influence final evaluations for a holistic perspective.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/car-sustainability-analyzer.git
-   cd car-sustainability-analyzer
-   ```
-2. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the Streamlit app:
-   ```bash
-   streamlit run app.py
-   ```
-4. Upload a car image or input a car model to analyze its sustainability.
+4. **Machine Learning-Based Predictions**:
+   - Uses a **Random Forest model** to predict sustainability scores based on real-world emissions, MPG, and powertrain contributions.
 
 ---
 
 ## 📊 Data Sources
 
-This project strictly uses publicly available data, including data from the **United States Environmental Protection Agency (EPA)**. 
+- **United States Environmental Protection Agency (EPA)**: Primary source for emissions and MPG data.
+- **Reddit API**: Provides public sentiment analysis regarding manufacturers’ sustainability initiatives.
+- **Manufacturer Sustainability Reports**: Extracted for internal insights on initiatives and commitments.
+
+---
+
+## 💡 Why Sustainability Scores Matter
+
+Sustainability metrics help combat climate change and foster eco-friendly innovations in the automotive industry. Manufacturers can leverage insights to:
+- Comply with global regulations.
+- Build consumer trust.
+- Contribute to reducing the industry's environmental footprint.
+
+---
+
+## 🖼️ Key Components
+
+### **1. Home Page (🗂️ Home Page)**
+- Introduces the project and provides an overview of automotive sustainability trends.
+- Includes comparative visualizations, such as boxplots for manufacturer scores and trends over time.
+
+### **2. Manufacturer Analysis (📈 Manufacturer Analysis)**
+- Detailed insights for individual manufacturers:
+  - Sustainability score forecasts.
+  - Real-world CO2 emissions and MPG trends.
+  - Powertrain distribution analysis.
+- AI sentiment analysis integration.
+
+### **3. AI Car Sustainability Analyzer (🚗 AI Car Sustainability Analyzer)**
+- Analyze the sustainability of car models using:
+  - **CLIP Model** for car image recognition.
+  - **Cohere API** to generate sustainability scores and explanations.
+
+### **4. Advanced Visualizations (manufacturer_advanced_visuals.py, visualizations.py)**
+- Generates advanced insights:
+  - CO2 reduction rates.
+  - MPG efficiency growth.
+  - Powertrain composition.
+
+### **5. Future Predictions (future_predictions.py)**
+- Uses **Prophet** to forecast sustainability scores for manufacturers based on historical trends.
+
+### **6. Machine Learning (random_forest_model.py)**
+- A Random Forest model predicts yearly sustainability scores using weighted features:
+  - CO2 emissions, MPG, and powertrain contributions.
+
+---
+
+## 📦 Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/carbon-lens-dashboard.git
+   cd carbon-lens-dashboard
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the Streamlit app:
+   ```bash
+   streamlit run 🗂️_Home_Page.py
+   ```
+
+---
+
+## 📘 How It Works
+
+1. **Data Processing**:
+   - Filters emissions data from 2008 onward for consistent analysis.
+   - Normalizes metrics like CO2 emissions and MPG for comparability.
+
+2. **AI Models**:
+   - **CLIP**: Identifies car models from uploaded images.
+   - **Cohere API**: Generates sustainability scores with detailed explanations.
+   - **DistilBERT**: Performs sentiment analysis on Reddit posts and reports.
+
+3. **Machine Learning**:
+   - Random Forest predicts sustainability scores with cross-validation for reliability.
+
+4. **Prophet Forecasting**:
+   - Predicts sustainability trends for manufacturers over the next decade.
+
+---
+
+## 📊 Example Insights
+
+- **CO2 Emissions**:
+  - Graphs highlight the reduction in emissions over time for major manufacturers.
+- **Sustainability Scores**:
+  - Provides a clear comparison of efforts between brands like Toyota, Hyundai, and Volkswagen.
+- **Future Predictions**:
+  - Highlights expected sustainability improvements based on past performance.
+
+---
+
+## 📦 Dependencies
+This project requires the following:
+
+- **Python 3.7+**
+- **Streamlit**: Interactive user interface.
+- **Matplotlib**: Data visualizations.
+- **NumPy**: Numerical processing.
+- **Pandas**: Data handling and analysis.
+- **Cohere API**: NLP-powered sustainability explanations.
+- **CLIP (OpenAI)**: Car image recognition.
+- **Prophet**: Time series forecasting.
+- **Scikit-learn**: Machine learning predictions.
+- **Pillow**: Image processing for CLIP.
+- **Pdfplumber**: Extracting text from PDFs (e.g., sustainability reports).
+- **PRAW**: Sentiment analysis using Reddit data.
+
+To install all dependencies, run:
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
 ## ⚠️ Disclaimer
 
-This project is intended for educational purposes only. The sustainability scores are based on publicly available data and are not meant to critique or promote specific manufacturers. **Tesla** was excluded from the analysis due to a lack of comparable data, ensuring a fair and standardized evaluation across all manufacturers.
-
----
-
-## 🖼️ Example Output
-
-1. **Sustainability Analysis for BMW X7:**
-   - Sustainability Score: 65/100
-   - Explanation: Includes analysis of emissions, materials, and manufacturing efficiency.
-
-2. **Graphs:**
-   - **Sustainability Growth Over Time** for all manufacturers.
-   - Boxplots showing **yearly sustainability scores** across brands.
-
----
-
-## 📦 Dependencies
-
-- Python 3.7+
-- `streamlit`
-- `matplotlib`
-- `numpy`
-- `pandas`
-- `cohere`
-- `clip` (from OpenAI)
-
----
-
-## 🤝 Acknowledgments
-
-Special thanks to:
-- **United States Environmental Protection Agency** for providing public data.
-- **Cohere** for the NLP API to generate sustainability explanations.
-- **OpenAI** for the CLIP model used in car recognition.
+This tool is for educational purposes and does not aim to critique or promote any specific manufacturer. All data is sourced from public records, including the **EPA** and Reddit. Tesla was excluded due to insufficient comparable data, ensuring consistent analysis.
 
 ---
 
@@ -86,5 +165,3 @@ Special thanks to:
 This project is open-source and available under the [MIT License](LICENSE).
 
 ---
-
-Feel free to adjust this based on your project specifics!
