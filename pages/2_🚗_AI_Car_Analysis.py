@@ -1,7 +1,7 @@
 from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
 import streamlit as st
-import openai
+import cohere
 import io
 
 # Load pretrained CLIP model and processor
@@ -43,19 +43,20 @@ car_labels = [
     "Kia EV6", "Tesla Model X", "Rivian R1S", "Lucid Gravity", "Volkswagen ID. Buzz"
 ]
 
-# GPT Sustainability Scoring
-openai.api_key = "your_openai_api_key"
+# Initialize Cohere API
+co = cohere.Client('jgqeITEBHzYLimbQnsay4dH7uIJIDaSA6QYUUZIz')
+
+# Cohere Sustainability Scoring
 def get_sustainability_score(car_model):
-    prompt = f"Analyze the sustainability of the car model: {car_model}. Provide a score between 0-100 and an explanation."
-    response = openai.Completion.create(
-        engine="text-davinci-003",
+    prompt = f"Analyze the sustainability of '{car_model}' and give a score (0-100) with a short explanation."
+    response = co.generate(
+        model='command-xlarge-nightly',
         prompt=prompt,
-        max_tokens=150
+        max_tokens=200,
+        temperature=0.7
     )
-    result = response.choices[0].text.strip()
-    score = int([int(s) for s in result.split() if s.isdigit()][0])
-    explanation = result.split(". ", 1)[-1]
-    return score, explanation
+    result = response.generations[0].text.strip()
+    return result
 
 # Preprocess Image
 def preprocess_image(image):
@@ -69,7 +70,7 @@ def preprocess_image(image):
 
 # Streamlit App
 st.set_page_config(page_title="AI Car Sustainability Analysis", page_icon="🚗", layout="wide")
-st.title("Car Sustainability Analyzer")
+st.title("🚗 Car Sustainability Analyzer")
 
 # Input Options
 input_method = st.radio("Choose an input method:", ("Upload Car Image", "Enter Car Model"))
@@ -78,17 +79,17 @@ if input_method == "Upload Car Image":
     uploaded_file = st.file_uploader("Upload an image of the car:", type=["jpg", "jpeg", "png"])
     if uploaded_file and st.button("Analyze Image"):
         car_model = preprocess_image(uploaded_file)
-        score, explanation = get_sustainability_score(car_model)
         st.success(f"Predicted Car Model: {car_model}")
-        st.info(f"Sustainability Score: {score}")
-        st.write(explanation)
+        result = get_sustainability_score(car_model)
+        st.info("Sustainability Analysis:")
+        st.write(result)
 
 elif input_method == "Enter Car Model":
     car_model = st.text_input("Enter the car model (e.g., Toyota RAV4, Tesla Model 3):")
     if car_model and st.button("Analyze Model"):
         if car_model in car_labels:
-            score, explanation = get_sustainability_score(car_model)
-            st.success(f"Sustainability Score: {score}")
-            st.write(explanation)
+            result = get_sustainability_score(car_model)
+            st.info("Sustainability Analysis:")
+            st.write(result)
         else:
             st.error("Car model not recognized. Please check your input.")
