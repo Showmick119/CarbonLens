@@ -164,7 +164,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 {explanation}
             </p>
         </div>
@@ -193,7 +193,7 @@ if st.button("⚡ Run Sentiment Analysis"):
             st.success(f"✅ Adjusted Sustainability Score: **{final_score:.2f}**")
             st.markdown(
                 f"""
-                <div style="padding: 15px; border-radius: 10px; border: 1px solid #ffffff;">
+                <div style="padding: 14px; border-radius: 10px; border: 1px solid #ffffff;">
                     <h4 style="color:#ffffff;">Explanation:</h4>
                     <p style="font-size: 16px; color:#ffffff;">{explanation}</p>
                 </div>
