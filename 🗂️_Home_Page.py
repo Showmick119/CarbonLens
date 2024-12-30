@@ -50,7 +50,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 16px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 This boxplot illustrates the yearly sustainability score distributions for various car manufacturers, highlighting their 
                 efforts in emissions reduction, energy efficiency, and eco-friendly practices. The boxes represent the interquartile range (IQR), 
                 with outliers indicating exceptional performance or setbacks. Toyota and Hyundai display consistent sustainability improvements, 
@@ -76,7 +76,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 16px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 This graph depicts the sustainability scores of major car manufacturers from 2008 to 2024, reflecting their progress 
                 in emissions reduction, energy efficiency, and eco-friendly initiatives. A steady rise across most manufacturers 
                 indicates growing efforts toward sustainability, with a significant post-2020 surge due to increased EV adoption and 
@@ -93,7 +93,7 @@ st.subheader("⚠️ Disclaimer")
 st.markdown(
     f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 This tool analyzes car manufacturers' sustainability using publicly available data, including information from the United States Environmental Protection Agency (EPA). 
                 Scores reflect rigorous metrics, focusing on emissions, energy efficiency, and sustainability efforts. Tesla was excluded due to a lack of comparable 
                 data, ensuring fairness and consistency in the analysis. This project aims to promote transparency and awareness, not to critique or target any 
