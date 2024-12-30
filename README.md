@@ -4,8 +4,6 @@
 
 The **Carbon Lens Dashboard** is an AI-powered application designed to assess and analyze the sustainability of automotive manufacturers and individual car models. This tool integrates advanced AI models, machine learning, and sentiment analysis to provide insightful sustainability scores and trends, helping users understand environmental impacts across the automotive industry.
 
-**Test it out by clicking the following link**: https://carbonlens.streamlit.app/
-
 ---
 
 ## 🚀 Features
