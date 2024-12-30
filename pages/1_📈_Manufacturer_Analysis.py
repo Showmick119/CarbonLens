@@ -59,7 +59,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 {explanation}
             </p>
         </div>
@@ -80,7 +80,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 {explanation}
             </p>
         </div>
@@ -101,7 +101,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 {explanation}
             </p>
         </div>
@@ -122,7 +122,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 {explanation}
             </p>
         </div>
@@ -143,7 +143,7 @@ with col2:
     st.markdown(
         f"""
         <div>
-            <p style="font-size: 15px; line-height: 2.0;">
+            <p style="font-size: 12px; line-height: 2.0;">
                 {explanation}
             </p>
         </div>
