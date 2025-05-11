@@ -1,12 +1,12 @@
-# 🌍 Carbon Lens Dashboard
+# Carbon Lens Dashboard
 
-## 📖 Overview
+## Overview
 
 The **Carbon Lens Dashboard** is an AI-powered application designed to assess and analyze the sustainability of automotive manufacturers and individual car models. This tool integrates advanced AI models, machine learning, and sentiment analysis to provide insightful sustainability scores and trends, helping users understand environmental impacts across the automotive industry.
 
 ---
 
-## 🚀 Features
+## Features
 
 1. **AI-Powered Car Sustainability Analysis**:
    - Upload car images or input car model names to evaluate their sustainability.
@@ -28,7 +28,7 @@ The **Carbon Lens Dashboard** is an AI-powered application designed to assess an
 
 ---
 
-## 📊 Data Sources
+## Data Sources
 
 - **United States Environmental Protection Agency (EPA)**: Primary source for emissions and MPG data.
 - **Reddit API**: Provides public sentiment analysis regarding manufacturers’ sustainability initiatives.
@@ -36,7 +36,7 @@ The **Carbon Lens Dashboard** is an AI-powered application designed to assess an
 
 ---
 
-## 💡 Why Sustainability Scores Matter
+## Why Sustainability Scores Matter
 
 Sustainability metrics help combat climate change and foster eco-friendly innovations in the automotive industry. Manufacturers can leverage insights to:
 - Comply with global regulations.
@@ -45,7 +45,7 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
 
 ---
 
-## 🖼️ Key Components
+## Key Components
 
 ### **1. Home Page (🗂️ Home Page)**
 - Introduces the project and provides an overview of automotive sustainability trends.
@@ -78,7 +78,7 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
 
 ---
 
-## 📦 Installation
+## Installation
 
 1. Clone the repository:
    ```bash
@@ -98,7 +98,7 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
 
 ---
 
-## 📘 How It Works
+## How It Works
 
 1. **Data Processing**:
    - Filters emissions data from 2008 onward for consistent analysis.
@@ -117,7 +117,7 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
 
 ---
 
-## 📊 Example Insights
+## Example Insights
 
 - **CO2 Emissions**:
   - Graphs highlight the reduction in emissions over time for major manufacturers.
@@ -128,7 +128,7 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 This project requires the following:
 
 - **Python 3.7+**
@@ -151,13 +151,13 @@ pip install -r requirements.txt
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 This tool is for educational purposes and does not aim to critique or promote any specific manufacturer. All data is sourced from public records, including the **EPA** and Reddit. Tesla was excluded due to insufficient comparable data, ensuring consistent analysis.
 
 ---
 
-## 📝 License
+## License
 
 This project is open-source and available under the [MIT License](LICENSE).
 
