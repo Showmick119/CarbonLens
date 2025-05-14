@@ -156,9 +156,3 @@ pip install -r requirements.txt
 This tool is for educational purposes and does not aim to critique or promote any specific manufacturer. All data is sourced from public records, including the **EPA** and Reddit. Tesla was excluded due to insufficient comparable data, ensuring consistent analysis.
 
 ---
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
----
