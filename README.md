@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Carbon Lens Dashboard** is an AI-powered application designed to assess and analyze the sustainability of automotive manufacturers and individual car models. This tool integrates advanced AI models, machine learning, and sentiment analysis to provide insightful sustainability scores and trends, helping users understand environmental impacts across the automotive industry.
+The Carbon Lens Dashboard is an AI-powered application designed to assess and analyze the sustainability of automotive manufacturers and individual car models. It leverages open-source NLP models from HuggingFace for sentiment analysis and integrates machine learning techniques to generate insightful sustainability scores and trends, helping users better understand the environmental impact across the automotive industry.
 
 ---
 
@@ -56,11 +56,11 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
   - Sustainability score forecasts.
   - Real-world CO2 emissions and MPG trends.
   - Powertrain distribution analysis.
-- AI sentiment analysis integration.
+- AI sentiment analysis integration using the **DistilBERT** model.
 
 ### **3. AI Car Sustainability Analyzer (🚗 AI Car Sustainability Analyzer)**
 - Analyze the sustainability of car models using:
-  - **CLIP Model** for car image recognition.
+  - **OpenAI's CLIP Model** for car image recognition.
   - **Cohere API** to generate sustainability scores and explanations.
 
 ### **4. Advanced Visualizations (manufacturer_advanced_visuals.py, visualizations.py)**
@@ -70,10 +70,10 @@ Sustainability metrics help combat climate change and foster eco-friendly innova
   - Powertrain composition.
 
 ### **5. Future Predictions (future_predictions.py)**
-- Uses **Prophet** to forecast sustainability scores for manufacturers based on historical trends.
+- Uses the **Prophet** model to forecast sustainability scores for manufacturers based on historical trends.
 
 ### **6. Machine Learning (random_forest_model.py)**
-- A Random Forest model predicts yearly sustainability scores using weighted features:
+- A Random Forest model predicts yearly sustainability scores using feature engineering techniques:
   - CO2 emissions, MPG, and powertrain contributions.
 
 ---
