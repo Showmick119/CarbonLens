@@ -138,6 +138,7 @@ This project requires the following:
 - **Pandas**: Data handling and analysis.
 - **Cohere API**: NLP-powered sustainability explanations.
 - **CLIP (OpenAI)**: Car image recognition.
+- **Transformers (Hugging Face)**: Open-source NLP models for sentiment analysis.
 - **Prophet**: Time series forecasting.
 - **Scikit-learn**: Machine learning predictions.
 - **Pillow**: Image processing for CLIP.
